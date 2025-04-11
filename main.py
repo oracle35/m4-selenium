@@ -3,26 +3,21 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 import unittest
 
-# from util import logo
 
-
-# We'll be using https://www.elimparcial.com/
+WEBSITE = "https://www.bbc.com/"
 
 
 class TestPaginaPrincipal(unittest.TestCase):
     def setUp(self):
-        self.driver = webdriver.Chrome()  # Can change it to Firefox later :)
-        self.driver.get(
-            "http://www.portalnoticias.com"
-        )  # TODO: Change this to an actual website.
+        self.driver = webdriver.Firefox()  # Can change it to Firefox later :)
+        self.driver.get(WEBSITE)  # TODO: Change this to an actual website.
 
     def test_titulo_pagina(self):
-        self.assertEqual(self.driver.title, "Portal de Noticias")
+        self.assertEqual(self.driver.title, "BBC Home")
 
-    def test_barra_busqueda(self):
-        barra_busqueda = self.driver.find_element(By.NAME, "q")
-        barra_busqueda.send_keys("clima" + Keys.RETURN)
-        # Agregar comprobaciones para los resultados de búsqueda
+
+    def downloadPage(self):
+        pass
 
     def tearDown(self):
         self.driver.quit()
