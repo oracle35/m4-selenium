@@ -124,66 +124,68 @@ class TestAccesoSecciones(unittest.TestCase):
         self.driver.get(WEBSITE)
 
     def test_acceso_news(self):
-        news_button = self.driver.find_element(
-            By.XPATH, "/html/body/div[2]/div/nav/section/nav/ul/li[2]/div/a"
+        wait = WebDriverWait(self.driver, 10)
+        news_button = wait.until(
+            EC.element_to_be_clickable(
+                (By.XPATH, "//a[@data-testid='mainNavigationLink' and text()='News']")
+            )
         )
-        time.sleep(1)
         news_button.click()
-        news_url = self.driver.current_url
-        # Check that the news button of the main page redirects to the proper page
-        self.assertEqual(news_url, "https://www.bbc.com/news")
+        self.assertEqual(self.driver.current_url, "https://www.bbc.com/news")
 
     def test_acceso_sport(self):
-        sport_button = self.driver.find_element(
-            By.XPATH, "/html/body/div[2]/div/nav/section/nav/ul/li[3]/div/a"
+        wait = WebDriverWait(self.driver, 10)
+        sport_button = wait.until(
+            EC.element_to_be_clickable(
+                (By.XPATH, "//a[@data-testid='mainNavigationLink' and text()='Sport']")
+            )
         )
-        time.sleep(1)
         sport_button.click()
-        sport_url = self.driver.current_url
-        # Check that the sport button in the main page redirects to the proper page
-        self.assertEqual(sport_url, "https://www.bbc.com/sport")
+        self.assertEqual(self.driver.current_url, "https://www.bbc.com/sport")
 
-        time.sleep(1)
-        # Check that the sport page loaded properly by looking for one of the possible categories
-        sport_example = self.driver.find_element(
-            By.XPATH,
-            "/html/body/div[2]/div/div/div[1]/div/header/div/nav/div/div[1]/div/div/div[2]/ul/li[4]/a/span",
+        sport_example = wait.until(
+            EC.presence_of_element_located((By.XPATH, "//span[text()='Formula 1']"))
         )
         self.assertEqual(sport_example.text, "Formula 1")
 
     def test_acceso_business(self):
-        business_button = self.driver.find_element(
-            By.XPATH, "/html/body/div[2]/div/nav/section/nav/ul/li[4]/div/a"
+        wait = WebDriverWait(self.driver, 10)
+
+        business_button = wait.until(
+            EC.element_to_be_clickable(
+                (
+                    By.XPATH,
+                    "//a[@data-testid='mainNavigationLink' and text()='Business']",
+                )
+            )
         )
-        time.sleep(1)
         business_button.click()
+
         business_url = self.driver.current_url
-        # Check that the business button in the main page redirects to the proper page
         self.assertEqual(business_url, "https://www.bbc.com/business")
 
-        time.sleep(1)
-        # Check that the business page loaded properly by looking for its title
-        business_title = self.driver.find_element(
-            By.XPATH, "/html/body/div[2]/div/main/article/div[2]/div/div/h1"
+        business_title = wait.until(
+            EC.presence_of_element_located((By.XPATH, "//h1[text()='Business']"))
         )
         self.assertEqual(business_title.text, "Business")
 
     def test_acceso_innovation(self):
-        innovation_button = self.driver.find_element(
-            By.XPATH, "/html/body/div[2]/div/nav/section/nav/ul/li[5]/div/a"
+        wait = WebDriverWait(self.driver, 10)
+        innovation_button = wait.until(
+            EC.element_to_be_clickable(
+                (
+                    By.XPATH,
+                    "//a[@data-testid='mainNavigationLink' and text()='Innovation']",
+                )
+            )
         )
-        time.sleep(1)
         innovation_button.click()
-        innovation_url = self.driver.current_url
-        # Check that the innovation button in the main page redirects to the proper page
-        self.assertEqual(innovation_url, "https://www.bbc.com/innovation")
+        self.assertEqual(self.driver.current_url, "https://www.bbc.com/innovation")
 
-        time.sleep(1)
-        # Check that the innovation page loaded properly by looking for it's title
-        business_title = self.driver.find_element(
-            By.XPATH, "/html/body/div[2]/div/main/article/div[2]/div/div/h1"
+        innovation_title = wait.until(
+            EC.presence_of_element_located((By.XPATH, "//h1[text()='Innovation']"))
         )
-        self.assertEqual(business_title.text, "Innovation")
+        self.assertEqual(innovation_title.text, "Innovation")
 
     def tearDown(self):
         self.driver.quit()
