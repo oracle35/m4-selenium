@@ -64,7 +64,6 @@ class TestBusquedaNoticias(TestPaginaPrincipal):
 class TestPaginaArticulo(unittest.TestCase):
     def setUp(self):
         self.driver = webdriver.Chrome()
-        # self.driver = webdriver.Firefox()  # Can change it to Firefox later :)
         self.driver.get(WEBSITE)
 
     def test_abrir_articulo(self):
@@ -72,11 +71,9 @@ class TestPaginaArticulo(unittest.TestCase):
         first_article_text = first_article.text
         first_article.click()
 
-        # Inside the detail page of the first article
         time.sleep(1)
         article_title = self.driver.find_element(By.TAG_NAME, "h1")
 
-        # Assert that the article is properly linked to the detail page
         self.assertEqual(article_title.text, first_article_text)
 
     def test_fecha_articulo(self):
@@ -84,9 +81,7 @@ class TestPaginaArticulo(unittest.TestCase):
         first_article_text = first_article.text
         first_article.click()
 
-        # Inside the detail page of the first article
         time.sleep(1)
-        # Check that the article contains a date
         date = len(self.driver.find_elements(By.TAG_NAME, "time")) > 0
         self.assertEqual(date, True)
 
@@ -95,9 +90,7 @@ class TestPaginaArticulo(unittest.TestCase):
         first_article_text = first_article.text
         first_article.click()
 
-        # Inside the detail page of the first article
         time.sleep(1)
-        # Check that the article contains the text with details of what happened
         article_info = (
             len(
                 self.driver.find_elements(
@@ -115,14 +108,13 @@ class TestPaginaArticulo(unittest.TestCase):
 class TestAccesoSecciones(unittest.TestCase):
     def setUp(self):
         self.driver = webdriver.Chrome()
-        # self.driver = webdriver.Firefox()  # Can change it to Firefox later :)
         self.driver.get(WEBSITE)
 
     def test_acceso_news(self):
         wait = WebDriverWait(self.driver, 10)
         news_button = wait.until(
             EC.element_to_be_clickable(
-                (By.XPATH, "//a[@data-testid='mainNavigationLink' and text()='News']")
+                (By.XPATH, "//a[@data-testid='mainNavigationLink' and text()='News']") # Buscamos el botón de noticias en base al XPATH
             )
         )
         news_button.click()
