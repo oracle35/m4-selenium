@@ -9,6 +9,7 @@ import unittest
 
 
 WEBSITE = "https://www.bbc.com/"
+EXPECTED_KEYWORD = "Formula One"
 
 
 class TestPaginaPrincipal(unittest.TestCase):
@@ -20,7 +21,7 @@ class TestPaginaPrincipal(unittest.TestCase):
         self.assertEqual(
             self.driver.title,
             "BBC Home - Breaking News, World News, US News, Sports, Business, Innovation, Climate, Culture, Travel, Video & Audio",
-        )  # Proper title of the page.
+        )  # El propia
 
     def tearDown(self):
         self.driver.quit()
@@ -28,29 +29,23 @@ class TestPaginaPrincipal(unittest.TestCase):
 
 class TestBusquedaNoticias(TestPaginaPrincipal):
     def test_busqueda_exitosa(self):
-        self.driver.get("https://www.bbc.com/search?q=climate+change")
-        try:
-            # Espera hasta que aparezca el div con la clase específica
-            element = WebDriverWait(self.driver, 20).until(
-                EC.presence_of_element_located(
-                    (By.CSS_SELECTOR, "div.sc-32f23d22-2.iumrhG")
-                )
+        self.driver.get(
+            "https://www.bbc.com/search?q=formula+one"
+        )  # Usamos Query Params para verificar que efectivamente pueda buscar dentro de la aplicación.
+        element = WebDriverWait(self.driver, 20).until(
+            EC.presence_of_element_located(
+                (By.CSS_SELECTOR, "div.sc-32f23d22-2.iumrhG")
             )
+        )
 
-            # Busca todos los divs con data-testid='newport-card'
-            cards = element.find_elements(
-                By.CSS_SELECTOR, "div[data-testid='newport-card']"
-            )
-            found = any(
-                "climate change" in card.text.lower() for card in cards
-            )  # Busca y analiza todas las tarjetas, pero si es por lo menos una dará el resultado de True. :)
-            self.assertTrue(
-                found, "No se encontró ninguna tarjeta que contenga 'climate change'."
-            )
-        except Exception as e:
-            self.fail(
-                f"No se encontró el div o tardó demasiado en cargar. Detalle: {e}"
-            )
+        # Busca todos los divs con data-testid='newport-card'
+        cards = element.find_elements(
+            By.CSS_SELECTOR, "div[data-testid='newport-card']"
+        )
+        found = any(EXPECTED_KEYWORD.lower() in card.text.lower() for card in cards)
+        self.assertTrue(
+            found, f"No se encontró ninguna tarjeta que contenga '{EXPECTED_KEYWORD}'."
+        )
 
     def test_busqueda_sin_resultados(self):
         self.driver.get("https://www.bbc.com/search?q=asldkfjalsdkjf")
