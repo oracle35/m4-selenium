@@ -2,6 +2,7 @@ import time
 
 from selenium import webdriver
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
 import unittest
@@ -29,22 +30,26 @@ class TestBusquedaNoticias(TestPaginaPrincipal):
     def test_busqueda_exitosa(self):
         self.driver.get("https://www.bbc.com/search?q=climate+change")
         try:
-            # Aumenta el tiempo de espera
-            WebDriverWait(self.driver, 60).until(
-                EC.presence_of_all_elements_located(
-                    (By.CSS_SELECTOR, ".ssrcss-1hizfh0-PromoHeadline")
+            # Espera hasta que aparezca el div con la clase específica
+            element = WebDriverWait(self.driver, 20).until(
+                EC.presence_of_element_located(
+                    (By.CSS_SELECTOR, "div.sc-32f23d22-2.iumrhG")
                 )
             )
-            resultados = self.driver.find_elements(
-                By.CSS_SELECTOR, ".ssrcss-1hizfh0-PromoHeadline"
+
+            # Busca todos los divs con data-testid='newport-card'
+            cards = element.find_elements(
+                By.CSS_SELECTOR, "div[data-testid='newport-card']"
             )
+            found = any(
+                "climate change" in card.text.lower() for card in cards
+            )  # Busca y analiza todas las tarjetas, pero si es por lo menos una dará el resultado de True. :)
             self.assertTrue(
-                len(resultados) > 0,
-                "No se encontraron resultados para 'climate change'",
+                found, "No se encontró ninguna tarjeta que contenga 'climate change'."
             )
         except Exception as e:
             self.fail(
-                f"No se encontraron resultados o tardaron demasiado en cargar. Detalle: {e}"
+                f"No se encontró el div o tardó demasiado en cargar. Detalle: {e}"
             )
 
     def test_busqueda_sin_resultados(self):
